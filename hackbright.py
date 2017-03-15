@@ -168,6 +168,30 @@ def handle_input():
             get_grades_by_title(title)
 
 
+def get_all_projects():
+    """Get all projects."""
+
+    QUERY = """
+        SELECT title
+        FROM Projects
+        """
+    db_cursor = db.session.execute(QUERY)
+    rows = db_cursor.fetchall()
+    print rows
+    return rows
+
+
+def get_all_students():
+    """Get all students."""
+
+    QUERY = """
+        SELECT github
+        FROM Students
+        """
+    db_cursor = db.session.execute(QUERY)
+    rows = db_cursor.fetchall()
+    print rows
+    return rows
 
 if __name__ == "__main__":
     app = Flask(__name__)

@@ -19,10 +19,12 @@ def get_student(github):
     """Show information about a student."""
 
     first, last, github = hackbright.get_student_by_github(github)
+    projects_and_grades = hackbright.get_grades_by_github(github)
     return render_template("student_info.html",
                            first=first,
                            last=last,
-                           github=github)
+                           github=github,
+                           projects_and_grades = projects_and_grades)
 
 # renders search form
 @app.route("/student-search")
@@ -38,8 +40,8 @@ def get_student_add_form():
 
     return render_template("student_add.html")
 
-# receives add form via post method, extracts form information 
-# and calls method to create new student in database, then 
+# receives add form via post method, extracts form information
+# and calls method to create new student in database, then
 # redirects to student/github route, passing in github as parameter
 @app.route("/student-created", methods=['POST'])
 def get_student_created():
@@ -53,6 +55,29 @@ def get_student_created():
     hackbright.make_new_student(first_name, last_name, github)
 
     return redirect(url_for("get_student", github=github))
+
+@app.route("/project/<project_title>")
+def get_project(project_title):
+    """Show information about a project."""
+
+    title, description, max_grade = hackbright.get_project_by_title(project_title)
+    student_grades = hackbright.get_grades_by_title(project_title)
+    return render_template("project_info.html",
+                           title=title,
+                           description=description,
+                           max_grade=max_grade,
+                           student_grades=student_grades)
+
+@app.route("/")
+def get_homepage():
+    """Show homepage."""
+
+    projects = hackbright.get_all_projects()
+    students = hackbright.get_all_students()
+    return render_template("homepage.html",
+                           students=students,
+                           projects=projects)
+
 
 if __name__ == "__main__":
     hackbright.connect_to_db(app)
